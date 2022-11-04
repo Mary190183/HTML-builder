@@ -12,7 +12,11 @@ fs.readdir(secretFolder, function (err, files) {
       if (stats.size > 0) {
         const {name, ext} = path.parse(fileInfo);
         let output = `${name} - ${ext.slice(1)} - ${stats.size} bytes\n`;
-        stdout.write(output)
+        stdout.write(output), (err) => {
+          if (err) {
+            console.error(err)
+            return
+            }}
       }
     });
   });
