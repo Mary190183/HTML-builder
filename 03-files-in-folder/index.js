@@ -4,6 +4,7 @@ const secretFolder = path.join(__dirname, "secret-folder");
 const {stdout} = process;
 
 fs.readdir(secretFolder, function (err, files) {
+  
   files.forEach(file => {
     let fileInfo = path.join(secretFolder, file);
     
@@ -15,5 +16,4 @@ fs.readdir(secretFolder, function (err, files) {
       }
     });
   });
-}
-);
+});
