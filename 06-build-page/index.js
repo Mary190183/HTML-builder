@@ -77,6 +77,7 @@ async function copyDir(directory, src) {
     }); 
   });
 }
+
 copyDir(destinationImg, sourceImg)
 copyDir(destinationSvg, sourceSvg)
 copyDir(destinationFonts, sourceFonts)
@@ -104,14 +105,8 @@ fs.readdir(components, function (err, files) {
   let streamTemplate = fs.createReadStream(path.resolve(__dirname, 'template.html'), 'utf-8');
 
   streamTemplate.on('data', tmp => {
-    let result = '';
-    
-    while(tmp.search('{{') > 0 && tmp.search('}}') > tmp.search('{{')) {
-      outputHTML.write(tmp.substring(0, tmp.search('{{')));
-      result = tmp.substring(tmp.search('{{')+2, tmp.search('}}'));
-      outputHTML.write(String(componentsNew[result]));
-      tmp = tmp.substring(tmp.search('}}')+2, tmp.length);
-    }
+ 
+ 
     outputHTML.write(tmp);
   });
 });
