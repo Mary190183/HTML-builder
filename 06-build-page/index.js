@@ -104,10 +104,21 @@ fs.readdir(components, function (err, files) {
 
   let streamTemplate = fs.createReadStream(path.resolve(__dirname, 'template.html'), 'utf-8');
 
-  streamTemplate.on('data', tmp => {
+  streamTemplate.on('data', str => {
+ let result = '';  
+while(str.search('{{') > 0 && str.search('}}') > str.search('{{')) {
+  outputHTML.write(str.substring(0, str.search('{{')));
+
+
+  result = str.substring(str.search('{{')+2, str.search('}}'));
+  
+  outputHTML.write(String(componentsNew[result]));
  
- 
-    outputHTML.write(tmp);
+  str = str.substring(str.search('}}')+2, str.length);
+}
+
+    outputHTML.write(str);
+
   });
 });
 
