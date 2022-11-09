@@ -84,10 +84,12 @@ let destinationImg = path.resolve( __dirname, 'project-dist/assets/img');
 let destinationSvg = path.resolve( __dirname, 'project-dist/assets/svg');
 
 //создание папок
+(async function() {
 mkdir(destinationCopy);
 mkdir(destinationFonts);
 mkdir(destinationImg);
 mkdir(destinationSvg);
+})();
 //очистка 
 async function unlink(directory) {
   files => {
@@ -107,7 +109,9 @@ unlink(destinationSvg);
 //копирование
 async function copyDir(directory, src) {
   await fs.readdir(src, function (err, files) {
-    files.forEach(file => {
+    files.forEach(file => 
+      
+      {
       fs.copyFile(path.resolve(src, file), path.resolve(directory, file), (err) => {
         if (err) {
           console.error(err)
