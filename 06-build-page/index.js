@@ -21,7 +21,7 @@ fs.readdir(components, function (err, files) {
   files.forEach(file => {
     
     let stream = fs.createReadStream(path.resolve(components, file), 'utf-8');
-   пgitstream.on('data', chunk => {
+   stream.on('data', chunk => {
       let fileInfo = path.resolve(components, file);
       const {ext} = path.parse(fileInfo);
       componentsNew[path.basename(file, ext)] = chunk;
