@@ -3,7 +3,7 @@ const path = require('path');
 const destination = path.resolve(__dirname, 'project-dist');
 //создание папки project-dist
 async function mkdir(directory) {
-  fs.mkdir(directory, {recursive: true }, (err) => {   
+  await fs.mkdir(directory, {recursive: true }, (err) => {   
     if (err) {
     console.error(err)
     return
@@ -12,6 +12,46 @@ async function mkdir(directory) {
 }
 
 mkdir(destination);
+//создание index.html
+const components = path.resolve(__dirname, 'components');
+const outputHTML = fs.createWriteStream(path.resolve(destination, 'index.html'), 'utf-8');
+const componentsNew = new Object;
+fs.readdir(components, function (err, files) {
+  
+  files.forEach(file => {
+    
+    let stream = fs.createReadStream(path.resolve(components, file), 'utf-8');
+   пgitstream.on('data', chunk => {
+      let fileInfo = path.resolve(components, file);
+      const {ext} = path.parse(fileInfo);
+      componentsNew[path.basename(file, ext)] = chunk;
+      
+    }), (err) => {
+      if (err) {
+        console.error(err)
+        return
+    }}
+  })
+
+  let streamTemplate = fs.createReadStream(path.resolve(__dirname, 'template.html'), 'utf-8');
+
+  streamTemplate.on('data', str => {
+ let result = '';  
+while(str.search('{{') > 0 && str.search('}}') > str.search('{{')) {
+  outputHTML.write(str.substring(0, str.search('{{')));
+
+
+  result = str.substring(str.search('{{')+2, str.search('}}'));
+  
+  outputHTML.write(String(componentsNew[result]));
+ 
+  str = str.substring(str.search('}}')+2, str.length);
+}
+
+    outputHTML.write(str);
+  
+  });
+});
 
 //создание styles
 const source = path.resolve(__dirname, 'styles');
@@ -52,7 +92,7 @@ mkdir(destinationSvg);
 async function unlink(directory) {
   files => {
 files.forEach(file => {
-  fs.unlink(path.resolve(directory, file), (err) => {
+ fs.unlink(path.resolve(directory, file), (err) => {
     if (err) {
     console.error(err)
     return
@@ -66,7 +106,7 @@ unlink(destinationImg);
 unlink(destinationSvg);
 //копирование
 async function copyDir(directory, src) {
-  fs.readdir(src, function (err, files) {
+  await fs.readdir(src, function (err, files) {
     files.forEach(file => {
       fs.copyFile(path.resolve(src, file), path.resolve(directory, file), (err) => {
         if (err) {
@@ -81,44 +121,3 @@ async function copyDir(directory, src) {
 copyDir(destinationImg, sourceImg)
 copyDir(destinationSvg, sourceSvg)
 copyDir(destinationFonts, sourceFonts)
-
-//создание index.html
-const components = path.resolve(__dirname, 'components');
-const outputHTML = fs.createWriteStream(path.resolve(destination, 'index.html'), 'utf-8');
-const componentsNew = new Object;
-fs.readdir(components, function (err, files) {
-  
-  files.forEach(file => {
-    let stream = fs.createReadStream(path.resolve(components, file), 'utf-8');
-    stream.on('data', chunk => {
-      let fileInfo = path.resolve(components, file);
-      const {ext} = path.parse(fileInfo);
-      componentsNew[path.basename(file, ext)] = chunk;
-      
-    }), (err) => {
-      if (err) {
-        console.error(err)
-        return
-    }}
-  })
-
-  let streamTemplate = fs.createReadStream(path.resolve(__dirname, 'template.html'), 'utf-8');
-
-  streamTemplate.on('data', str => {
- let result = '';  
-while(str.search('{{') > 0 && str.search('}}') > str.search('{{')) {
-  outputHTML.write(str.substring(0, str.search('{{')));
-
-
-  result = str.substring(str.search('{{')+2, str.search('}}'));
-  
-  outputHTML.write(String(componentsNew[result]));
- 
-  str = str.substring(str.search('}}')+2, str.length);
-}
-
-    outputHTML.write(str);
-
-  });
-});
-
